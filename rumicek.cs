@@ -24,7 +24,7 @@ namespace morseovka
             {"/", "-..-."}, {"(", "-.--."}, {")", "-.--.-"}, {"&", ".-..."},
             {":", "---..."}, {";", "-.-.-."}, {"=", "-...-"}, {"+", ".-.-."},
             {"-", "-....-"}, {"_", "..--.-"}, {"$", "...-..-"},
-            {"@", ".--.-."}, {" ", " "}, {"", ""}
+            {"@", ".--.-."}, {" ", ""}, {"", " "}
         };
 
         private Dictionary<string, string> reversedDictionary => _morseCodeDictionary.ToDictionary(x => x.Value, x => x.Key);
@@ -52,9 +52,31 @@ namespace morseovka
         {
             string oktext = RemoveDiacritics(text);
             string result = "";
-            foreach (var i in oktext)
+            bool idkcodelam = false;
+            for (int i = 0; i < oktext.Length; i++)
             {
-                result += _morseCodeDictionary[i.ToString().ToUpper()] + "/";
+                if (idkcodelam)
+                {
+                    idkcodelam = false;
+                } else
+                {
+                    try
+                    {
+                        if (oktext[i].ToString().ToUpper() == "C" && oktext[i + 1].ToString().ToUpper() == "H")
+                        {
+                            result += _morseCodeDictionary["CH"] + "/";
+                            idkcodelam = true;
+                        }
+                        else
+                        {
+                            result += _morseCodeDictionary[oktext[i].ToString().ToUpper()] + "/";
+                        }
+                    }
+                    catch
+                    {
+                        result += _morseCodeDictionary[oktext[i].ToString().ToUpper()] + "/";
+                    }
+                }
             }
             return result;
         }
